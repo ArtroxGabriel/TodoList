@@ -4,7 +4,7 @@
     "description": "todolist using Express,Prisma e MySql",
     "main": "index.ts",
     "scripts": {
-        "dev": "npx ts-node index.js",
+        "dev": "npx nodemon",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "ArtroxGabriel",
@@ -12,6 +12,8 @@
     "devDependencies": {
         "@types/express": "^4.17.21",
         "@types/node": "^20.14.11",
+        "dotenv": "^16.4.5",
+        "nodemon": "^3.1.4",
         "prisma": "^5.17.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.5.3"
