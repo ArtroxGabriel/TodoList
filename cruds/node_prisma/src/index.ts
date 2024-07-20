@@ -1,12 +1,12 @@
-import express from "express";
+import express, { Express } from "express";
+import { PORT } from "./config";
+import router from "./routes";
 
+const app: Express = express()
 
-const app = express()
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-const PORT = process.env.PORT || 3001
-
-app.get('/', (_, res) => {
-    res.send("Working")
-})
+app.use("/api", router)
 
 app.listen(PORT, () => { console.log(`Express running in ${PORT} port`) })
