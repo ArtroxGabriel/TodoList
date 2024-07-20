@@ -1,8 +1,10 @@
-import { Request, Response } from "express"
-import { userService_create, userService_delete, userService_getAll, userService_getByEmail, userService_getById, userService_update } from "../service/userService"
+import { NextFunction, Request, Response } from "express"
+import { userService_create, userService_delete, userService_getAll, userService_getByEmail, userService_getById, userService_login, userService_update } from "../service/userService"
 import { StatusCodes } from "http-status-codes"
+import { BadRequestException } from "../exceptions/badRequest";
+import { ErrorCodes } from "../exceptions/httpException";
 
-export async function userController_create(req: Request, res: Response) {
+export async function userController_create(req: Request, res: Response, next: NextFunction) {
     try {
         const {
             Name,
@@ -14,11 +16,24 @@ export async function userController_create(req: Request, res: Response) {
         res.status(StatusCodes.CREATED).send(userCreated);
 
     } catch (error: any) {
-        if (error.message === "User Already exists!") {
-            res.status(StatusCodes.CONFLICT).json({ error: error.message });
-        } else {
-            res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
-        }
+        next(error)
+    }
+}
+
+
+export async function userController_login(req: Request, res: Response, next: NextFunction) {
+    try {
+        const {
+            Email,
+            Password
+        } = req.body
+
+        const result = await userService_login(Email, Password);
+
+        res.status(StatusCodes.OK).json(result)
+
+    } catch (error: any) {
+        next(error)
     }
 }
 
@@ -28,56 +43,56 @@ export async function userController_getAll(_: Request, res: Response) {
     res.status(StatusCodes.OK).send(quero)
 }
 
-export async function userController_delete(req: Request, res: Response) {
+export async function userController_delete(req: Request, res: Response, next: NextFunction) {
     try {
         const userId = req.params.userId
         if (!userId) {
-            res.status(StatusCodes.BAD_REQUEST).json({ error: new Error("Missing user id") })
+            next(new BadRequestException("Missing user id", ErrorCodes.REQUIRED_VALUES_EMPTY))
         }
 
         await userService_delete(Number(userId))
 
         res.status(StatusCodes.GONE).json(`User with id ${userId} deleted`)
     } catch (error: any) {
-        res.status(StatusCodes.NOT_FOUND).json({ error: error.message })
+        next(error)
     }
 }
 
-export async function userController_getById(req: Request, res: Response) {
+export async function userController_getById(req: Request, res: Response, next: NextFunction) {
     try {
         const userId = req.params.userId
         if (!userId) {
-            res.status(StatusCodes.BAD_REQUEST).json({ error: new Error("Missing user id") })
+            next(new BadRequestException("Missing user id", ErrorCodes.REQUIRED_VALUES_EMPTY))
         }
 
         const user = await userService_getById(Number(userId))
 
         res.status(StatusCodes.OK).send(user)
     } catch (error: any) {
-        res.status(StatusCodes.NOT_FOUND).json({ error: error.message })
+        next(error)
     }
 }
 
-export async function userController_getByEmail(req: Request, res: Response) {
+export async function userController_getByEmail(req: Request, res: Response, next: NextFunction) {
     try {
         const userEmail = req.params.userEmail
         if (!userEmail) {
-            res.status(StatusCodes.BAD_REQUEST).json({ error: new Error("Missing email") })
+            next(new BadRequestException("Missing user email", ErrorCodes.REQUIRED_VALUES_EMPTY))
         }
 
         const user = await userService_getByEmail(userEmail)
 
         res.status(StatusCodes.OK).send(user)
     } catch (error: any) {
-        res.status(StatusCodes.NOT_FOUND).json({ error: error.message })
+        next(error)
     }
 }
 
-export async function userController_update(req: Request, res: Response) {
+export async function userController_update(req: Request, res: Response, next: NextFunction) {
     try {
         const userId = req.params.userId
         if (!userId) {
-            res.status(StatusCodes.BAD_REQUEST).json({ error: new Error("Missing user id") })
+            next(new BadRequestException("Missing user id", ErrorCodes.REQUIRED_VALUES_EMPTY))
         }
 
         const {
@@ -89,7 +104,7 @@ export async function userController_update(req: Request, res: Response) {
 
         res.status(StatusCodes.OK).send(user)
     } catch (error: any) {
-        res.status(StatusCodes.NOT_FOUND).json({ error: error.message })
+        next(error)
     }
 }
 

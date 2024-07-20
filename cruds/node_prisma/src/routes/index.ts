@@ -1,9 +1,18 @@
-import { Router } from "express";
-import userRouter from "./auth";
+import { Router, Express } from "express";
+import userRouter from "./userRouter";
+import { errorMiddleware } from "../middlewares";
 
-const router: Router = Router()
+function router(app: Express) {
 
-router.use("/user", userRouter)
+    const routers: Router = Router()
+
+    // users router
+    routers.use("/user", userRouter)
+
+    app.use("/api", routers)
+
+    app.use(errorMiddleware)
+}
 
 export default router
 
