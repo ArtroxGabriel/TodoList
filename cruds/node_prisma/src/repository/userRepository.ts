@@ -1,7 +1,7 @@
 import { prismaClient } from "../config";
 import { UserModel } from "../model/userModel";
 
-export const userRepository_create = async (user: UserModel) => {
+export const createUserRepo = async (user: UserModel) => {
     const userCreated = await prismaClient.user.create({
         data: {
             name: user.name,
@@ -12,7 +12,7 @@ export const userRepository_create = async (user: UserModel) => {
     return userCreated
 }
 
-export async function userRepository_update(id: number, user: UserModel) {
+export async function updateUserRepo(id: number, user: UserModel) {
     const userUpdated = await prismaClient.user.update({
         where: { id },
         data: {
@@ -24,26 +24,25 @@ export async function userRepository_update(id: number, user: UserModel) {
     return userUpdated
 }
 
-export async function userRepository_delete(id: number) {
+export async function deleteUserRepo(id: number) {
     await prismaClient.user.delete({
         where: { id }
     });
 }
 
-export async function userRepository_getById(id: number) {
+export async function getByIdRepo(id: number) {
     return await prismaClient.user.findFirst({
         where: { id }
-
     });
 }
 
-export async function userRepository_getByEmail(email: string) {
+export async function getByEmailRepo(email: string) {
     return await prismaClient.user.findFirst({
         where: { email }
     });
 }
 
-export async function userRepository_getAll() {
+export async function getUsersRepo() {
     return await prismaClient.user.findMany();
 }
 
