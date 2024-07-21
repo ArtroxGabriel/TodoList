@@ -1,5 +1,13 @@
 import { NextFunction, Request, Response } from "express"
-import { createUserService, deleteUserService, getUsersService, getByEmailService, getByIdService, loginService, updateUserService } from "../service/userService"
+import {
+    createUserService,
+    deleteUserService,
+    getUsersService,
+    getByEmailService,
+    getByIdService,
+    loginService,
+    updateUserService
+} from "../service/userService"
 import { StatusCodes } from "http-status-codes"
 import { BadRequestException } from "../exceptions/badRequest";
 import { ErrorCodes } from "../exceptions/httpException";
@@ -39,6 +47,7 @@ export async function deleteUser(req: Request, res: Response, next: NextFunction
                 action: "deleteUser"
             })
             next(new BadRequestException("Missing user id", ErrorCodes.REQUIRED_VALUES_EMPTY))
+            return;
         }
 
         await deleteUserService(Number(userId))
@@ -64,6 +73,7 @@ export async function getUserById(req: Request, res: Response, next: NextFunctio
                 action: "getUserById"
             })
             next(new BadRequestException("Missing user id", ErrorCodes.REQUIRED_VALUES_EMPTY))
+            return;
         }
 
         const user = await getByIdService(Number(userId))
@@ -88,6 +98,7 @@ export async function getUserByEmail(req: Request, res: Response, next: NextFunc
                 action: "getUserByEmail"
             })
             next(new BadRequestException("Missing user email", ErrorCodes.REQUIRED_VALUES_EMPTY))
+            return;
         }
 
         const user = await getByEmailService(userEmail)
@@ -107,11 +118,12 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
         const userId = req.params.userId
         if (!userId) {
             next(new BadRequestException("Missing user id", ErrorCodes.REQUIRED_VALUES_EMPTY))
+            return;
         }
 
         const {
             Name,
-            password: Password
+            Password
         } = req.body
 
         const user = await updateUserService(Number(userId), Name, Password)

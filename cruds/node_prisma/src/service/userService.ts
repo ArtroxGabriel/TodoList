@@ -143,8 +143,8 @@ export async function loginService(email: string, password: string) {
         throw error
     }
 
-    const user = await getByEmailRepo(email)
-    if (!user) {
+    const userToSignIn = await getByEmailRepo(email)
+    if (!userToSignIn) {
         const error = new BadRequestException(`User not found with this email ${email}`, ErrorCodes.USER_NOT_FOUND)
         logger.error(`User not found with this email ${email}`, {
             error,
@@ -153,7 +153,7 @@ export async function loginService(email: string, password: string) {
         throw error
     }
 
-    if (!compareSync(password, user.password)) {
+    if (!compareSync(password, userToSignIn.password)) {
         const error = new BadRequestException("Incorrect Credentials", ErrorCodes.INCORRECT_CREDENTIALS)
         logger.error("the passwords don't match", {
             error,
@@ -163,14 +163,14 @@ export async function loginService(email: string, password: string) {
     }
 
     const token = jwt.sign({
-        userId: user.id
+        userId: userToSignIn.id
     }, JWT_SECRET)
 
-    const { password: _, ...rest } = user
+    const { password: _, ...user } = userToSignIn
 
     logger.info("User logged succesfully", {
         action: "login"
     })
 
-    return { rest, token }
+    return { rest: user, token }
 }
