@@ -8,11 +8,13 @@ datasource db {
 }
 
 model User {
-    id       Int    @id @default(autoincrement())
-    email    String @unique
-    name     String
-    password String
-    List     List[]
+    id        Int      @id @default(autoincrement())
+    email     String   @unique
+    name      String
+    password  String
+    List      List[]
+    createdAt DateTime @default(now())
+    updateAt  DateTime @updatedAt
 }
 
 model List {
