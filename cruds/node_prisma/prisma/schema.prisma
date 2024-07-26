@@ -21,7 +21,7 @@ model List {
     id      Int    @id @default(autoincrement())
     title   String
     ownerId Int
-    owner   User   @relation(fields: [ownerId], references: [id])
+    owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
     Todos   Todo[]
 
     @@index([ownerId], map: "List_ownerId_fkey")
@@ -32,7 +32,7 @@ model Todo {
     description String
     status      Boolean @default(false)
     listId      Int
-    List        List    @relation(fields: [listId], references: [id])
+    List        List    @relation(fields: [listId], references: [id], onDelete: Cascade)
 
     @@index([listId], map: "Todo_listId_fkey")
 }
