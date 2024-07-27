@@ -18,6 +18,9 @@ export async function updateUserRepo(id: number, user: UserModel) {
         data: {
             name: user.name,
             password: user.password
+        },
+        include: {
+            List: true
         }
     })
 

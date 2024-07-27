@@ -23,7 +23,12 @@ jest.mock('../../src/config', () => ({
 }));
 
 describe('User Repository Tests', () => {
-    const user: UserModel = { name: 'John Doe', email: 'john@example.com', password: 'securepassword' };
+    const user: UserModel = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'securepassword',
+        lists: [],
+    };
     const userId = 1;
 
     beforeEach(() => {
@@ -49,7 +54,10 @@ describe('User Repository Tests', () => {
 
         expect(prismaClient.user.update).toHaveBeenCalledWith({
             where: { id: userId },
-            data: { name: updatedUser.name, password: updatedUser.password }
+            data: { name: updatedUser.name, password: updatedUser.password },
+            include: {
+                List: true
+            }
         });
         expect(result).toEqual(updatedUser);
     });

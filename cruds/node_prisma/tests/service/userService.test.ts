@@ -47,7 +47,12 @@ jest.mock('jsonwebtoken', () => ({
 }));
 
 describe('User Service Tests', () => {
-    const user: UserModel = { name: 'John Doe', email: 'john@example.com', password: 'securepassword' };
+    const user: UserModel = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'securepassword',
+        lists: [],
+    };
     const userId = 1;
     const token = 'fake-token';
 
@@ -96,7 +101,7 @@ describe('User Service Tests', () => {
         const result = await getUsersService();
 
         expect(getUsersRepo).toHaveBeenCalled();
-        expect(result).toEqual([{ name: user.name, email: user.email }]);
+        expect(result).toEqual([{ name: user.name, email: user.email, lists: [] }]);
     });
 
     test('getByIdService should return a user by id without password', async () => {
@@ -105,7 +110,7 @@ describe('User Service Tests', () => {
         const result = await getByIdService(userId);
 
         expect(getByIdRepo).toHaveBeenCalledWith(userId);
-        expect(result).toEqual({ id: userId, name: user.name, email: user.email });
+        expect(result).toEqual({ id: userId, name: user.name, email: user.email, lists: [] });
     });
 
     test('getByEmailService should return a user by email without password', async () => {
@@ -114,7 +119,7 @@ describe('User Service Tests', () => {
         const result = await getByEmailService(user.email);
 
         expect(getByEmailRepo).toHaveBeenCalledWith(user.email);
-        expect(result).toEqual({ name: user.name, email: user.email });
+        expect(result).toEqual({ name: user.name, email: user.email, lists: [] });
     });
 
     test('deleteUserService should delete a user', async () => {
@@ -137,7 +142,7 @@ describe('User Service Tests', () => {
         expect(getByEmailRepo).toHaveBeenCalledWith(user.email);
         expect(compareSync).toHaveBeenCalledWith(user.password, 'hashedpassword');
         expect(jwt.sign).toHaveBeenCalledWith({ userId: userId }, JWT_SECRET);
-        expect(result).toEqual({ rest: { id: userId, name: user.name, email: user.email }, token });
+        expect(result).toEqual({ rest: { id: userId, name: user.name, email: user.email, lists: [] }, token });
     });
 
     test('loginService should throw error for incorrect credentials', async () => {

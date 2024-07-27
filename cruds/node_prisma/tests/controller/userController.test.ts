@@ -28,9 +28,9 @@ jest.mock('../../src/config/logger', () => ({
 
 
 describe('User Controller Tests', () => {
-    let req: Partial<Request>;
-    let res: Partial<Response>;
-    let next: NextFunction;
+    let req: Partial<Request>
+    let res: Partial<Response>
+    let next: NextFunction
 
     beforeEach(() => {
         req = {};
