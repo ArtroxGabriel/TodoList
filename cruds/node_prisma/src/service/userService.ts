@@ -69,7 +69,7 @@ export async function updateUserService(
   logger.info("Starting update user service", {
     action: "updateUser",
   });
-  await getByIdService(id);
+  await getUserByIdService(id);
 
   const userToUpdate: UserModel = {
     name: name,
@@ -98,7 +98,7 @@ export async function getUsersService() {
   });
 }
 
-export async function getByIdService(id: number) {
+export async function getUserByIdService(id: number) {
   logger.info("Starting get by id service", {
     action: "getUserById",
   });
@@ -122,7 +122,7 @@ export async function getByIdService(id: number) {
   }
 }
 
-export async function getByEmailService(email: string) {
+export async function getUserByEmailService(email: string) {
   logger.info("Starting get by email service", {
     action: "getUserByEmail",
   });
@@ -150,7 +150,7 @@ export async function deleteUserService(id: number) {
   logger.info("Starting delete user service", {
     action: "deleteUser",
   });
-  await getByIdService(id);
+  await getUserByIdService(id);
 
   deleteUserRepo(id);
   logger.info(`User with id ${id} deleted succesfully`);

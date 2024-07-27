@@ -3,21 +3,23 @@ import { PORT, prismaClient } from "./config";
 import router from "./routes";
 
 async function main() {
-    const app: Express = express()
+  const app: Express = express();
 
-    app.use(express.urlencoded({ extended: true }))
-    app.use(express.json())
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
-    router(app)
+  router(app);
 
-    app.listen(PORT, () => { console.log(`Express running in ${PORT} port`) })
+  app.listen(PORT, () => {
+    console.log(`Express running in ${PORT} port`);
+  });
 }
 
 main()
-    .catch((e: any) => {
-        console.log(e)
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prismaClient.$disconnect();
-    })
+  .catch((e: any) => {
+    console.log(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prismaClient.$disconnect();
+  });
