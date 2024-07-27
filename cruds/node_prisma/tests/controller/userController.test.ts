@@ -1,13 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import {
-  createUser,
-  getUsers,
-  deleteUser,
-  getUserById,
-  getUserByEmail,
-  updateUser,
-  loginController,
-} from "../../src/controller/userController";
+import UserController from "../../src/controller/userController";
 import {
   createUserService,
   getUsersService,
@@ -30,6 +22,7 @@ describe("User Controller Tests", () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
+  let userController: UserController;
 
   beforeEach(() => {
     req = {};
@@ -39,6 +32,7 @@ describe("User Controller Tests", () => {
       json: jest.fn(),
     };
     next = jest.fn();
+    userController = new UserController();
   });
 
   test("createUser should create a new user", async () => {
@@ -50,7 +44,7 @@ describe("User Controller Tests", () => {
     const userCreated = { id: 1, ...req.body };
     (createUserService as jest.Mock).mockResolvedValue(userCreated);
 
-    await createUser(req as Request, res as Response, next);
+    await userController.create(req as Request, res as Response, next);
 
     expect(createUserService).toHaveBeenCalledWith(
       "John Doe",
@@ -65,7 +59,7 @@ describe("User Controller Tests", () => {
     const users = [{ id: 1, name: "John Doe", email: "john@example.com" }];
     (getUsersService as jest.Mock).mockResolvedValue(users);
 
-    await getUsers(req as Request, res as Response);
+    await userController.getUsers(req as Request, res as Response);
 
     expect(getUsersService).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
@@ -75,7 +69,7 @@ describe("User Controller Tests", () => {
   test("deleteUser should delete a user", async () => {
     req.params = { userId: "1" };
 
-    await deleteUser(req as Request, res as Response, next);
+    await userController.delete(req as Request, res as Response, next);
 
     expect(deleteUserService).toHaveBeenCalledWith(1);
     expect(res.status).toHaveBeenCalledWith(StatusCodes.GONE);
@@ -87,7 +81,7 @@ describe("User Controller Tests", () => {
     const user = { id: 1, name: "John Doe", email: "john@example.com" };
     (getUserByIdService as jest.Mock).mockResolvedValue(user);
 
-    await getUserById(req as Request, res as Response, next);
+    await userController.getByID(req as Request, res as Response, next);
 
     expect(getUserByIdService).toHaveBeenCalledWith(1);
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
@@ -99,7 +93,7 @@ describe("User Controller Tests", () => {
     const user = { id: 1, name: "John Doe", email: "john@example.com" };
     (getUserByEmailService as jest.Mock).mockResolvedValue(user);
 
-    await getUserByEmail(req as Request, res as Response, next);
+    await userController.getByEmail(req as Request, res as Response, next);
 
     expect(getUserByEmailService).toHaveBeenCalledWith("john@example.com");
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
@@ -116,7 +110,7 @@ describe("User Controller Tests", () => {
     };
     (updateUserService as jest.Mock).mockResolvedValue(userUpdated);
 
-    await updateUser(req as Request, res as Response, next);
+    await userController.update(req as Request, res as Response, next);
 
     expect(updateUserService).toHaveBeenCalledWith(
       1,
@@ -132,7 +126,7 @@ describe("User Controller Tests", () => {
     req.params = {};
     req.body = { Name: "John Updated", Password: "newpassword" };
 
-    await updateUser(req as Request, res as Response, next);
+    await userController.update(req as Request, res as Response, next);
 
     expect(updateUserService).not.toHaveBeenCalled();
   });
@@ -145,7 +139,7 @@ describe("User Controller Tests", () => {
     };
     (loginService as jest.Mock).mockResolvedValue(loginResult);
 
-    await loginController(req as Request, res as Response, next);
+    await userController.login(req as Request, res as Response, next);
 
     expect(loginService).toHaveBeenCalledWith(
       "john@example.com",

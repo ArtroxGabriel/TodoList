@@ -1,12 +1,14 @@
 import express, { Express } from "express";
 import { PORT, prismaClient } from "./config";
 import router from "./routes";
+import morgan from "morgan";
 
 async function main() {
   const app: Express = express();
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+  app.use(morgan("tiny"));
 
   router(app);
 

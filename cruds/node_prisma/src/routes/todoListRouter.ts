@@ -1,18 +1,14 @@
 import { Router } from "express";
-import {
-  createTodoListController,
-  deleteTodoListController,
-  getTodoListByIDController,
-  getTodoListByOwnerIdController,
-  updateTodoListController,
-} from "../controller/todoListController";
+import todoListController from "../controller/todoListController";
 
 const todoListRouter: Router = Router();
 
-todoListRouter.post("/", createTodoListController);
-todoListRouter.put("/:ID", updateTodoListController);
-todoListRouter.get("/:ID", getTodoListByIDController);
-todoListRouter.get("/getLists/:UserID", getTodoListByOwnerIdController);
-todoListRouter.delete("/:ID", deleteTodoListController);
+const controller = new todoListController();
+
+todoListRouter.post("/", controller.create);
+todoListRouter.put("/:ID", controller.update);
+todoListRouter.get("/:ID", controller.get);
+todoListRouter.get("/getLists/:UserID", controller.getLists);
+todoListRouter.delete("/:ID", controller.delete);
 
 export default todoListRouter;
