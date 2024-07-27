@@ -12,7 +12,7 @@ import {
 import { getUserByIdService as getUserByIdService } from "./userService";
 
 export async function createTodoListService(ownerId: string, title: string) {
-  logger.info("Starting create todo list service");
+  logger.info("Starting create TODO list service");
   if (!title.trim() || !ownerId.trim()) {
     const error = new BadRequestException(
       "Some value is empty",
@@ -24,23 +24,23 @@ export async function createTodoListService(ownerId: string, title: string) {
     });
     throw error;
   }
-  const userId = Number(ownerId);
 
-  const user = await getUserByIdService(userId);
-  if (!user) {
+  const list = await getUserByIdService(Number(ownerId));
+  if (!list) {
     const error = new BadRequestException(
       "User don't exists!",
       ErrorCodes.LIST_ALREADY_EXISTS,
     );
-    logger.error(`Not found user with this id: ${userId}`, {
+    logger.error(`Not found user with this id: ${Number(ownerId)}`, {
       error,
       action: "createdTodoList",
     });
     throw error;
   }
+  logger.info(`Found user for received ID`);
 
   const todoListToCreate: todoListModel = {
-    ownerId: userId,
+    ownerId: Number(ownerId),
     title,
     Todos: [],
   };
@@ -52,7 +52,7 @@ export async function createTodoListService(ownerId: string, title: string) {
 }
 
 export async function updateTodoListService(id: string, newTitle: string) {
-  logger.info("Starting update todo list service");
+  logger.info("Starting update TODO list service");
   if (!id.trim() || !newTitle.trim()) {
     const error = new BadRequestException(
       "Some value is empty",
@@ -64,7 +64,18 @@ export async function updateTodoListService(id: string, newTitle: string) {
     });
     throw error;
   }
-  await getListByIdService(id);
+  const list = await getListByIdService(id);
+  if (!list) {
+    const error = new BadRequestException(
+      `Not found list with this ${id}`,
+      ErrorCodes.LIST_NOT_FOUND,
+    );
+    logger.error(`Not found list with this ${id}`, {
+      error,
+      action: "updateTODOList",
+    });
+    throw error;
+  }
 
   return updateTodoListRepo(Number(id), newTitle);
 }
@@ -113,11 +124,23 @@ export async function deleteTodoListService(id: string) {
     );
     logger.error(`Empty Values: id: ${id}`, {
       error,
-      action: "deleteTodoList",
+      action: "deleteTODOList",
     });
     throw error;
   }
-  await getListByIdService(id);
+
+  const list = await getListByIdService(id);
+  if (!list) {
+    const error = new BadRequestException(
+      `Not found list with this ${id}`,
+      ErrorCodes.LIST_NOT_FOUND,
+    );
+    logger.error(`Not found list with this ${id}`, {
+      error,
+      action: "deleteTODOList",
+    });
+    throw error;
+  }
 
   return deleteTodoListRepo(Number(id));
 }

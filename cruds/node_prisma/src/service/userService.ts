@@ -8,9 +8,9 @@ import { UserModel } from "../model/userModel";
 import {
   createUserRepo,
   deleteUserRepo,
-  getUsersRepo,
   getByEmailRepo,
   getByIdRepo,
+  getUsersRepo,
   updateUserRepo,
 } from "../repository/userRepository";
 
