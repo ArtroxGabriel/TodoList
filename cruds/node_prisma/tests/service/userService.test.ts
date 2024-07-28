@@ -35,7 +35,6 @@ jest.mock("../../src/config/logger", () => ({
   error: jest.fn(),
 }));
 
-// Mock do bcrypt e jwt
 jest.mock("bcrypt", () => ({
   hashSync: jest.fn(),
   compareSync: jest.fn(),
